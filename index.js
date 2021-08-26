@@ -1,13 +1,18 @@
 const inquirer = require("inquirer");
 // const jest = require("jest");
-const Employee = require("./employee");
-const Manager = require("./manager");
-const Engineer = require("./engineer");
-const Intern = require("./intern");
+const fs = require("fs");
+const Employee = require("./lib/employee");
+const Manager = require("./lib/manager");
+const Engineer = require("./lib/engineer");
+const Intern = require("./lib/intern");
+const mgrCard = require("./src/mgrCard");
+const intCard = require("./src/intCard").default;
+const engCard = require("./src/engCard");
+const compiler = require("./src/compiler");
 const teamArray = [];
 const idArray = [];
+// const cardDiv = document.getElementById("#card-div");
 
-// questions for all employees
 const mQuestions = [
   {
     type: "input",
@@ -36,7 +41,7 @@ const empQuestions = [
     type: "list",
     name: "role",
     message: "Please select the employee job role",
-    choices: ["Manager", "Engineer", "Intern"],
+    choices: ["Engineer", "Intern"],
   },
   {
     type: "input",
@@ -78,17 +83,14 @@ const empQuestions = [
 
 const init = () => {
   inquirer.prompt(mQuestions).then((data) => {
-    console.log(data);
-
     const mgr = new Manager(
       data.mgrName,
       data.mgrID,
       data.mgrEmail,
       data.mgrOfficeNum
     );
+    mgr.role = "Manager";
     teamArray.push(mgr);
-    console.log(mgr);
-    console.log(teamArray);
 
     memberObj(data);
 
@@ -106,9 +108,9 @@ const memberObj = (data) => {
           data.empEmail,
           data.github
         );
+        eng.role = "Engineer";
         teamArray.push(eng);
-        console.log(eng);
-        console.log(teamArray);
+
         break;
       case "Intern":
         const int = new Intern(
@@ -117,13 +119,16 @@ const memberObj = (data) => {
           data.empEmail,
           data.school
         );
+        int.role = "Intern";
         teamArray.push(int);
-        console.log(int);
-        console.log(teamArray);
+
         break;
     }
     if (data.moreEmployees) {
       memberObj(data);
+    } else {
+      // compiler(teamArray);
+      return;
     }
   });
 };
